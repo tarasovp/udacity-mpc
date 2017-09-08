@@ -1,12 +1,14 @@
 # Model
 As proposed I used kinematic model with 6 variables - x,y,speed,angle,CTE, angle error and with two actuators - steering and throtle. Equation for model I've taken from the course:
 
+```python
 x_[t] = x[t-1] + v[t-1] * cos(psi[t-1]) * dt
 y_[t] = y[t-1] + v[t-1] * sin(psi[t-1]) * dt
 psi_[t] = psi[t-1] + v[t-1] / Lf * delta[t-1] * dt
 v_[t] = v[t-1] + a[t-1] * dt
 cte[t] = f(x[t-1]) - y[t-1] + v[t-1] * sin(epsi[t-1]) * dt
 epsi[t] = psi[t] - psides[t-1] + v[t-1] * delta[t-1] / Lf * dt
+```
 
 # Timestep Length and Elapsed Duration (N & dt)
 
