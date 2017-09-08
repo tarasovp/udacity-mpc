@@ -22,3 +22,4 @@ The first point I've taken was time after dt == after 0.1second. This helps to "
 # The vehicle must successfully drive a lap around the track.
 So the venicle is on the track. I've set minimul throttle to 0.3 and added some penality for slow down - so it go quite fast but still on track;)
 
+## video on track included -  fast.mov 
