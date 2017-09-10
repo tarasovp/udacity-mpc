@@ -118,7 +118,7 @@ int main(int argc, char *argv[]){
 					double psi = j[1]["psi"];
 					double v = j[1]["speed"];
                     //convert to m/s
-                    //v*=0.44704;
+                    v*=0.44704;
 					double steering_angle = j[1]["steering_angle"];
 					double throttle = j[1]["throttle"];
 
