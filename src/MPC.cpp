@@ -48,15 +48,15 @@ class FG_eval {
 public:
     // Fitted polynomial coefficients
     Eigen::VectorXd coeffs;
-    
+
     Eigen::VectorXd constants;
 
-    
-    
+
+
     FG_eval(Eigen::VectorXd coeffs, Eigen::VectorXd constants)
     {
         this->coeffs = coeffs;
-        this->constants=constants;
+        this->constants = constants;
     }
 
     typedef CPPAD_TESTVECTOR(AD<double>) ADvector;
@@ -68,8 +68,8 @@ public:
         // The cost is stored is the first element of `fg`.
         // Any additions to the cost should be added to `fg[0]`.
         fg[0] = 0;
-        
-        
+
+
         // Reference State Cost
         // TODO: Define the cost related the reference state and
         // any anything you think may be beneficial.
@@ -79,17 +79,17 @@ public:
             fg[0] += constants[2] * CppAD::pow(vars[v_start + i] - ref_v, 2);
         }
 
-        
+
         for (int i = 0; i < N - 1; i++) {
-            fg[0] += constants[3]*CppAD::pow(vars[delta_start + i], 2);
-            fg[0] += constants[4]*CppAD::pow(vars[a_start + i], 2);
+            fg[0] += constants[3] * CppAD::pow(vars[delta_start + i], 2);
+            fg[0] += constants[4] * CppAD::pow(vars[a_start + i], 2);
         }
 
         for (int i = 0; i < N - 2; i++) {
-            fg[0] += constants[5]*CppAD::pow(vars[delta_start + i + 1] - vars[delta_start + i], 2);
-            fg[0] += constants[6]*CppAD::pow(vars[a_start + i + 1] - vars[a_start + i], 2);
+            fg[0] += constants[5] * CppAD::pow(vars[delta_start + i + 1] - vars[delta_start + i], 2);
+            fg[0] += constants[6] * CppAD::pow(vars[a_start + i + 1] - vars[a_start + i], 2);
         }
-        
+
 
         //
         // Setup Constraints

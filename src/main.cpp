@@ -13,7 +13,7 @@
 using json = nlohmann::json;
 
 
-double delay=0.1;
+double delay = 0.1;
 
 
 // For converting back and forth between radians and degrees.
@@ -70,22 +70,22 @@ Eigen::VectorXd polyfit(Eigen::VectorXd xvals, Eigen::VectorXd yvals,
 	return result;
 }
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[]) {
 	uWS::Hub h;
 
 	// MPC is initialized here!
 	MPC mpc;
-    
-    //constants for base function
 
-    constants << 5000,50000,1,0,0,0,0;
-    //load from command line
-    if (argc > 1)
-        for (int i=0;i<7;i++) constants[i]=atof(argv[i+1]);
-        
-        
-    
-    
+	//constants for base function
+
+	constants << 5000, 50000, 1, 0, 0, 0, 0;
+	//load from command line
+	if (argc > 1)
+		for (int i = 0; i < 7; i++) constants[i] = atof(argv[i + 1]);
+
+
+
+
 
 	h.onMessage([&mpc](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length,
 	uWS::OpCode opCode) {
@@ -108,17 +108,17 @@ int main(int argc, char *argv[]){
 					Eigen::Map<Eigen::VectorXd> ptsy_(&ptsy[0], ptsy.size());
 
 					double px = j[1]["x"];
-                    double py = j[1]["y"];
+					double py = j[1]["y"];
 
 					ptsx_ = ptsx_.array() - px;
-                    ptsy_ = ptsy_.array() - py;
+					ptsy_ = ptsy_.array() - py;
 
 
 
 					double psi = j[1]["psi"];
 					double v = j[1]["speed"];
-                    //convert to m/s
-                    v*=0.44704;
+					//convert to m/s
+					v *= 0.44704;
 					double steering_angle = j[1]["steering_angle"];
 					double throttle = j[1]["throttle"];
 
@@ -151,14 +151,14 @@ int main(int argc, char *argv[]){
 					json msgJson;
 					// NOTE: Remember to divide by deg2rad(25) before you send the steering value back.
 					// Otherwise the values will be in between [-deg2rad(25), deg2rad(25] instead of [-1, 1].
-                    msgJson["steering_angle"] = steer_value/(deg2rad(25));
+					msgJson["steering_angle"] = steer_value / (deg2rad(25));
 					msgJson["throttle"] = throttle_value;
 
 					//Display the MPC predicted trajectory
 					vector<double> mpc_x_vals;
 					vector<double> mpc_y_vals;
-                    
-                    std::cout <<"steeting:" << steer_value/(deg2rad(25)) << endl;
+
+					std::cout << "steeting:" << steer_value / (deg2rad(25)) << endl;
 
 					//.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
 					// the points in the simulator are connected by a Green line
@@ -206,7 +206,7 @@ int main(int argc, char *argv[]){
 					//
 					// NOTE: REMEMBER TO SET THIS TO 100 MILLISECONDS BEFORE
 					// SUBMITTING.
-					this_thread::sleep_for(chrono::milliseconds((int)(delay*1000)));
+					this_thread::sleep_for(chrono::milliseconds((int)(delay * 1000)));
 					ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
 				}
 			} else {
