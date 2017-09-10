@@ -6,8 +6,9 @@
 
 using namespace std;
 
-const double dt=0.1;
+const double dt=0.2;
 const double Lf = 2.67;
+
 
 class MPC {
  public:
@@ -17,7 +18,8 @@ class MPC {
 
   // Solve the model given an initial state and polynomial coefficients.
   // Return the first actuatotions.
-  vector<double> Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs);
+    vector<double> Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs,
+                         Eigen::VectorXd constants);
 };
 
 #endif /* MPC_H */

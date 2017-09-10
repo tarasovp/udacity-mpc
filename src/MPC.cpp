@@ -4,14 +4,13 @@
 #include "Eigen-3.3/Eigen/Core"
 #include <math.h>
 #define n_state 6
-#define ref_v 80
+#define ref_v 50
 using CppAD::AD;
 
 #define angle20 M_PI*25/180
+size_t N = 10;
 
 // TODO: Set the timestep length and duration
-size_t N = 9;
-
 
 
 // This value assumes the model presented in the classroom is used.
@@ -36,20 +35,29 @@ size_t a_start = delta_start + N - 1;
 
 
 //we just want our car to stay on track, go fast. and optimizer will make everything for us
-const double c0 = 5000; //
+/*const double c0 = 5000; //
 const double c1 = 5000; //
-const double c2 = 5;
-/*const double c3=1;
-const double c4=1;
-const double c5=1;
-const double c6=1;
-*/
+const double c2 = 1;
+const double c3=0;
+const double c4=0;
+const double c5=0;
+const double c6=0;*/
+
 
 class FG_eval {
 public:
     // Fitted polynomial coefficients
     Eigen::VectorXd coeffs;
-    FG_eval(Eigen::VectorXd coeffs) { this->coeffs = coeffs; }
+    
+    Eigen::VectorXd constants;
+
+    
+    
+    FG_eval(Eigen::VectorXd coeffs, Eigen::VectorXd constants)
+    {
+        this->coeffs = coeffs;
+        this->constants=constants;
+    }
 
     typedef CPPAD_TESTVECTOR(AD<double>) ADvector;
     void operator()(ADvector& fg, const ADvector& vars) {
@@ -60,27 +68,28 @@ public:
         // The cost is stored is the first element of `fg`.
         // Any additions to the cost should be added to `fg[0]`.
         fg[0] = 0;
-
+        
+        
         // Reference State Cost
         // TODO: Define the cost related the reference state and
         // any anything you think may be beneficial.
         for (int i = 0; i < N; i++) {
-            fg[0] += c0 * CppAD::pow(vars[cte_start + i], 2);
-            fg[0] += c1 * CppAD::pow(vars[epsi_start + i], 2);
-            fg[0] += c2 * CppAD::pow(vars[v_start + i] - ref_v, 2);
+            fg[0] += constants[0] * CppAD::pow(vars[cte_start + i], 2);
+            fg[0] += constants[1] * CppAD::pow(vars[epsi_start + i], 2);
+            fg[0] += constants[2] * CppAD::pow(vars[v_start + i] - ref_v, 2);
         }
 
-        /*
+        
         for (int i = 0; i < N - 1; i++) {
-            fg[0] += c3*CppAD::pow(vars[delta_start + i], 2);
-            fg[0] += c4*CppAD::pow(vars[a_start + i], 2);
+            fg[0] += constants[3]*CppAD::pow(vars[delta_start + i], 2);
+            fg[0] += constants[4]*CppAD::pow(vars[a_start + i], 2);
         }
 
         for (int i = 0; i < N - 2; i++) {
-            fg[0] += c5*CppAD::pow(vars[delta_start + i + 1] - vars[delta_start + i], 2);
-            fg[0] += c6*CppAD::pow(vars[a_start + i + 1] - vars[a_start + i], 2);
+            fg[0] += constants[5]*CppAD::pow(vars[delta_start + i + 1] - vars[delta_start + i], 2);
+            fg[0] += constants[6]*CppAD::pow(vars[a_start + i + 1] - vars[a_start + i], 2);
         }
-        */
+        
 
         //
         // Setup Constraints
@@ -159,7 +168,7 @@ public:
 MPC::MPC() {}
 MPC::~MPC() {}
 
-vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
+vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs, Eigen::VectorXd constants) {
     bool ok = true;
     typedef CPPAD_TESTVECTOR(double) Dvector;
 
@@ -239,7 +248,7 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
     constraints_upperbound[epsi_start] = epsi;
 
     // object that computes objective and constraints
-    FG_eval fg_eval(coeffs);
+    FG_eval fg_eval(coeffs, constants);
     //
     // NOTE: You don't have to worry about these options
     //
