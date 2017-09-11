@@ -13,7 +13,9 @@ const double Lf = 2.67;
 class MPC {
  public:
   MPC();
-
+  double  prevDelta;
+  double prevA;
+    
   virtual ~MPC();
 
   // Solve the model given an initial state and polynomial coefficients.

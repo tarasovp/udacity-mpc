@@ -165,19 +165,23 @@ public:
 //
 // MPC class definition implementation.
 //
-MPC::MPC() {}
+MPC::MPC()
+{
+    prevA=0;
+    prevDelta=0;
+}
 MPC::~MPC() {}
 
 vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs, Eigen::VectorXd constants) {
     bool ok = true;
     typedef CPPAD_TESTVECTOR(double) Dvector;
 
-    double x = state[0];
-    double y = state[1];
-    double psi = state[2];
-    double v = state[3];
-    double cte = state[4];
-    double epsi = state[5];
+    const double x = state[0];
+    const double y = state[1];
+    const double psi = state[2];
+    const double v = state[3];
+    const double cte = state[4];
+    const double epsi = state[5];
 
     // TODO: Set the number of model variables (includes both states and inputs).
     // For example: If the state is a 4 element vector, the actuators is a 2
@@ -202,6 +206,11 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs, Eigen::
     vars[v_start] = v;
     vars[cte_start] = cte;
     vars[epsi_start] = epsi;
+    
+    //vars[delta_start]=prevDelta;
+    vars[a_start]=prevA;
+    
+    
 
     Dvector vars_lowerbound(n_vars);
     Dvector vars_upperbound(n_vars);
@@ -246,6 +255,11 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs, Eigen::
     constraints_upperbound[v_start] = v;
     constraints_upperbound[cte_start] = cte;
     constraints_upperbound[epsi_start] = epsi;
+    
+    //vars_lowerbound[delta_start]=prevDelta;
+    //vars_upperbound[delta_start]=prevDelta;
+    vars_lowerbound[a_start]=prevA;
+    vars_upperbound[a_start]=prevA;
 
     // object that computes objective and constraints
     FG_eval fg_eval(coeffs, constants);
@@ -296,6 +310,9 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs, Eigen::
         result.push_back(solution.x[x_start + i + 1]);
         result.push_back(solution.x[y_start + i + 1]);
     }
+    
+    prevDelta=solution.x[delta_start+1];
+    prevA=solution.x[a_start+1];
 
     return result;
 }
