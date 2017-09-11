@@ -207,7 +207,7 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs, Eigen::
     vars[cte_start] = cte;
     vars[epsi_start] = epsi;
     
-    //vars[delta_start]=prevDelta;
+    vars[delta_start]=prevDelta;
     vars[a_start]=prevA;
     
     

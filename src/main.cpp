@@ -77,8 +77,7 @@ int main(int argc, char *argv[]) {
 	MPC mpc;
 
 	//constants for base function
-
-	constants << 5000, 50000, 1, 0, 0, 0, 0;
+	constants << 5000, 150000, 1, 5000000, 0, 0, 0;
 	//load from command line
 	if (argc > 1)
 		for (int i = 0; i < 7; i++) constants[i] = atof(argv[i + 1]);
